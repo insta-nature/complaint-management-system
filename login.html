@@ -285,6 +285,7 @@ function renderSignIn(){
         <button type="submit" class="btn-brand" id="si_submit">Sign In</button>
       </form>
       <div class="switch-line">Don't have an account? <a onclick="renderSignUp()">Sign up</a></div>
+      <div class="switch-line">Back to <a href="index.html">Home</a></div>
     </div>`;
 
   document.getElementById("signInForm").addEventListener("submit", async (e)=>{
@@ -361,6 +362,7 @@ function renderSignUp(){
         <button type="submit" class="btn-brand" id="su_submit">Create Account</button>
       </form>
       <div class="switch-line">Already have an account? <a onclick="renderSignIn()">Sign in</a></div>
+      <div class="switch-line">Back to <a href="index.html">Home</a></div>
     </div>`;
 
   const pw = document.getElementById("su_pass");
