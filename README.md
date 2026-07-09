@@ -8,21 +8,40 @@ database.
 
 ```
 complaint-management-system/
-├── index.html          ← the entire front-end (HTML/CSS/JS in one file)
+├── index.html           ← public site: register a complaint + track status
+├── login.html            ← sign in / sign up (one page, no tabs)
+├── dashboard.html         ← admin dashboard (requires admin login)
+├── employee.html           ← employee portal (requires employee login)
+├── assets/
+│   ├── style.css            ← shared design system (all 4 pages use this)
+│   ├── common.js             ← shared API helper, utils, auth guard, and the
+│   │                            View/Update complaint modals (used by both
+│   │                            dashboard.html and employee.html)
+│   ├── public.js              ← index.html logic (registration form + tracking)
+│   ├── dashboard.js            ← dashboard.html logic (stats, employee master,
+│   │                              complaint list, assign, reports)
+│   └── employee.js              ← employee.html logic (assigned complaints list)
 ├── api/
-│   ├── config.php       ← database connection settings (EDIT THIS FIRST)
-│   ├── helpers.php       ← shared response / auth / upload helpers
-│   ├── auth.php          ← login / logout / session check
-│   ├── employees.php     ← employee master CRUD
-│   └── complaints.php    ← complaint create / list / update / assign / stats
+│   ├── config.php        ← database connection settings (EDIT THIS FIRST)
+│   ├── helpers.php        ← shared response / auth / upload helpers
+│   ├── auth.php            ← login / signup / logout / session check
+│   ├── employees.php        ← employee master CRUD
+│   └── complaints.php        ← complaint create / list / update / assign / stats
 ├── database/
 │   └── schema.sql        ← run this once to create the database + seed data
 ├── uploads/
-│   ├── attachment/       ← files uploaded with new complaints
-│   ├── before/            ← "before work" photos
-│   └── after/              ← "after work" photos
+│   ├── attachment/        ← files uploaded with new complaints
+│   ├── before/              ← "before work" photos
+│   └── after/                ← "after work" photos
+├── db-test.php           ← standalone DB connection diagnostic (see below)
 └── README.md
 ```
+
+Each of the four pages is a small, focused HTML file — open any one of them
+directly to see just that part of the system. `assets/common.js` holds
+everything shared between the admin and employee pages (API calls, the
+complaint view/update modals, the login-state check) so there's one place
+to change shared behavior instead of three.
 
 ## 1. Requirements
 
@@ -78,15 +97,23 @@ password `emp123` for this demo — change these in a real deployment.
 
 ## 5. How the pieces fit together
 
-- **Public tab**: anyone can register a complaint (with attachments) and
-  track a complaint by ID — no login required.
-- **Admin tab**: requires the admin login above. Full dashboard, employee
-  master (add/edit/delete), complaint list with search/filter, assign
-  complaints to employees, update status/remarks/photos, and simple reports.
-- **Employee tab**: requires an employee login. Employees only ever see
-  complaints assigned to them (enforced server-side in `complaints.php`,
-  not just hidden in the UI) and can update status, add remarks, and upload
+- **`index.html`** (public): anyone can register a complaint (with
+  attachments) and track a complaint by ID — no login required.
+- **`login.html`**: one page for both sign in and sign up (a link at the
+  bottom toggles between them — no tabs). Signing in as admin redirects to
+  `dashboard.html`; signing in/up as employee redirects to `employee.html`.
+- **`dashboard.html`** (admin only): full dashboard, employee master
+  (add/edit/delete), complaint list with search/filter, assign complaints
+  to employees, update status/remarks/photos, and simple reports.
+- **`employee.html`** (employee only): employees only ever see complaints
+  assigned to them (enforced server-side in `complaints.php`, not just
+  hidden in the UI) and can update status, add remarks, and upload
   before/after work photos.
+
+`dashboard.html` and `employee.html` each check the session on load via
+`requireRole()` in `assets/common.js` and bounce to `login.html` if you're
+not signed in with the right role — so you can't just open the URL directly
+without logging in.
 
 Sessions are handled with PHP's native `$_SESSION` (a cookie is set on
 login), so the browser needs cookies enabled. All API responses are JSON;

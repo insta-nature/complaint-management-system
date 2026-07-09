@@ -5,9 +5,10 @@
  */
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'DB_NAME');
-define('DB_USER', 'DB_USER');
-define('DB_PASS', 'DB_PASS');       // set your MySQL password here
+define('DB_PORT', '10022');		  // change if your MySQL runs on a different port
+define('DB_NAME', 'cms_db');
+define('DB_USER', 'root');
+define('DB_PASS', 'root');       // set your MySQL password here
 define('DB_CHARSET', 'utf8mb4');
 
 // Absolute path to the uploads folder on disk, and its public URL base.
@@ -20,7 +21,7 @@ define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx']);
 function db(): PDO {
     static $pdo = null;
     if ($pdo === null) {
-        $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
+        $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
         try {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
